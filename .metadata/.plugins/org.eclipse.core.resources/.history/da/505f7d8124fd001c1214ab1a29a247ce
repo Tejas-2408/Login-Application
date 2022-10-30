@@ -1,0 +1,51 @@
+package com.login;
+
+import java.io.IOException;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
+
+@WebServlet("/LoginController")
+public class LoginController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	private UsersDB udb ;
+	@Resource(name="jdbc/login")
+	private DataSource dataSource;
+	
+	
+	@Override
+	public void init() throws ServletException {
+		udb = new UsersDB(dataSource);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String action = request.getParameter("action");
+		try {
+		switch(action) {
+		case "REG" : 
+				addUser(request,response);
+		}
+		}
+		catch(Exception e) {
+			throw new ServletException(e);
+		}
+		
+	}
+
+	private void addUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String username = request.getParameter("name");
+		String email = request.getParameter("email");
+		String password = request.getParameter("pass");
+		String contact = request.getParameter("contact");
+		
+		udb.addUser(username, password, email, contact);
+		
+	}
+	
+
+}
